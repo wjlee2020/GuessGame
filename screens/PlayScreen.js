@@ -6,6 +6,7 @@ import {
     Alert,
     ScrollView,
     Dimensions,
+    useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -41,6 +42,12 @@ export default function PlayScreen({ userChoice, gameOverHandler }) {
     const [guessedNumsList, setGuessedNumsList] = useState([initGuess]);
     const [curLow, setCurLow] = useState(1);
     const [curHigh, setCurHigh] = useState(100);
+    const [availableDeviceWidth, setavailableDeviceWidth] = useState(
+        Dimensions.get("window").width
+    );
+    const [availableDeviceHeight, setavailableDeviceHeight] = useState(
+        Dimensions.get("window").height
+    );
 
     function guessAgainHandler(direction) {
         if (
@@ -64,10 +71,48 @@ export default function PlayScreen({ userChoice, gameOverHandler }) {
     }
 
     useEffect(() => {
+        const subscription = Dimensions.addEventListener("change", () => {
+            setavailableDeviceWidth(Dimensions.get("window").width);
+            setavailableDeviceHeight(Dimensions.get("window").height);
+        });
+    }, [Dimensions]);
+
+    useEffect(() => {
         if (currentGuess === userChoice) {
             gameOverHandler(guessedNumsList.length);
         }
     }, [currentGuess, userChoice, gameOverHandler]);
+
+    if (availableDeviceHeight < 500) {
+        return (
+            <View style={style.container}>
+                <Text style={DefaultStyles.title}>Computer's Guess:</Text>
+                <View style={style.controls}>
+                    <GameButton onPress={guessAgainHandler.bind(this, "lower")}>
+                        <Ionicons name="md-remove" size={20} color="white" />
+                    </GameButton>
+
+                    <NumContainer>{currentGuess}</NumContainer>
+
+                    <GameButton
+                        onPress={guessAgainHandler.bind(this, "greater")}
+                    >
+                        <Ionicons name="md-add" size={20} color="white" />
+                    </GameButton>
+                </View>
+                <View style={style.listContainer}>
+                    <ScrollView>
+                        {guessedNumsList.map((guessedNum, i) =>
+                            renderedListItems(
+                                guessedNum,
+                                guessedNumsList.length - i
+                            )
+                        )}
+                    </ScrollView>
+                </View>
+            </View>
+        );
+    }
 
     return (
         <View style={style.container}>
@@ -112,6 +157,12 @@ const style = StyleSheet.create({
         minWidth: 300,
         marginRight: "auto",
         marginLeft: "auto",
+    },
+    controls: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        width: "80%",
+        alignItems: "center",
     },
     listContainer: {
         flex: 1,

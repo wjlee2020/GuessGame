@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     StyleSheet,
@@ -8,6 +8,8 @@ import {
     Keyboard,
     Alert,
     Dimensions,
+    ScrollView,
+    KeyboardAvoidingView,
 } from "react-native";
 
 import Card from "../components/Card";
@@ -19,10 +21,20 @@ import DefaultStyles from "../constants/default-styles";
 import Colors from "../constants/colors";
 
 export default function BeginGameScreen({ startGameHandler }) {
+    const window = Dimensions.get("window");
+
     const [enteredNum, setEnteredNum] = useState("");
     const [gameNum, setGameNum] = useState("");
     const [error, setError] = useState("");
     const [confirmNum, setConfirmNum] = useState(false);
+
+    const [btnWidth, setBtnWidth] = useState(window.width / 4);
+
+    useEffect(() => {
+        const subscription = Dimensions.addEventListener("change", () => {
+            setBtnWidth(window.width / 4);
+        });
+    }, [window]);
 
     function numInputHandler(inputNum) {
         setEnteredNum(inputNum.replace(/[^0-9]/g, ""));
@@ -54,52 +66,65 @@ export default function BeginGameScreen({ startGameHandler }) {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View style={style.screen}>
-                <Text style={style.gameScreenTitle}>Let's Start Playing</Text>
+        <ScrollView>
+            <KeyboardAvoidingView
+                behavior="padding"
+                keyboardVerticalOffset={30}
+            >
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                    <View style={style.screen}>
+                        <Text style={style.gameScreenTitle}>
+                            Let's Start Playing
+                        </Text>
 
-                <Card extraStyle={style.inputContainer}>
-                    <Text style={DefaultStyles.bodyText}>Select A Number</Text>
-                    <Input
-                        extraStyle={style.input}
-                        blurOnSubmit
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="number-pad"
-                        maxLength={2}
-                        placeholder="Enter a Number"
-                        value={enteredNum}
-                        onChangeText={(text) => numInputHandler(text)}
-                    />
+                        <Card extraStyle={style.inputContainer}>
+                            <Text style={DefaultStyles.bodyText}>
+                                Select A Number
+                            </Text>
+                            <Input
+                                extraStyle={style.input}
+                                blurOnSubmit
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                keyboardType="number-pad"
+                                maxLength={2}
+                                placeholder="Enter a Number"
+                                value={enteredNum}
+                                onChangeText={(text) => numInputHandler(text)}
+                            />
 
-                    <View style={style.buttonContainer}>
-                        <View style={style.button}>
-                            <Button
-                                color={Colors.accentColor}
-                                title="Reset"
-                                onPress={resetInputHandler}
-                            />
-                        </View>
-                        <View style={style.button}>
-                            <Button
-                                color={Colors.primaryColor}
-                                title="Confirm"
-                                onPress={confirmInputHandler}
-                            />
-                        </View>
+                            <View style={style.buttonContainer}>
+                                <View style={{ width: btnWidth }}>
+                                    <Button
+                                        color={Colors.accentColor}
+                                        title="Reset"
+                                        onPress={resetInputHandler}
+                                    />
+                                </View>
+                                <View style={{ width: btnWidth }}>
+                                    <Button
+                                        color={Colors.primaryColor}
+                                        title="Confirm"
+                                        onPress={confirmInputHandler}
+                                    />
+                                </View>
+                            </View>
+                        </Card>
+                        {confirmNum ? (
+                            <Card extraStyle={style.gameNumContainer}>
+                                <Text>Your Number</Text>
+                                <NumContainer>{gameNum}</NumContainer>
+                                <GameButton
+                                    onPress={() => startGameHandler(gameNum)}
+                                >
+                                    Start Game
+                                </GameButton>
+                            </Card>
+                        ) : null}
                     </View>
-                </Card>
-                {confirmNum ? (
-                    <Card extraStyle={style.gameNumContainer}>
-                        <Text>Your Number</Text>
-                        <NumContainer>{gameNum}</NumContainer>
-                        <GameButton onPress={() => startGameHandler(gameNum)}>
-                            Start Game
-                        </GameButton>
-                    </Card>
-                ) : null}
-            </View>
-        </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </ScrollView>
     );
 }
 
@@ -141,8 +166,6 @@ const style = StyleSheet.create({
     },
     button: {
         // width: 100,
-        // grab the full window view Dimension width and divide
-        width: Dimensions.get("window").width / 4,
         marginRight: "auto",
         marginLeft: "auto",
     },
