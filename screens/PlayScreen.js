@@ -6,8 +6,10 @@ import {
     Alert,
     ScrollView,
     Dimensions,
-    useWindowDimensions,
 } from "react-native";
+
+import * as ScreenOrientation from "expo-screen-orientation";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import DefaultStyles from "../constants/default-styles";
@@ -37,14 +39,15 @@ function renderedListItems(value, key) {
 }
 
 export default function PlayScreen({ userChoice, gameOverHandler }) {
+    // locking screen to a certain orientation
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+
     const initGuess = generateRandomBetween(1, 100, userChoice);
     const [currentGuess, setCurrentGuess] = useState(initGuess);
     const [guessedNumsList, setGuessedNumsList] = useState([initGuess]);
     const [curLow, setCurLow] = useState(1);
     const [curHigh, setCurHigh] = useState(100);
-    const [availableDeviceWidth, setavailableDeviceWidth] = useState(
-        Dimensions.get("window").width
-    );
+
     const [availableDeviceHeight, setavailableDeviceHeight] = useState(
         Dimensions.get("window").height
     );
@@ -72,7 +75,6 @@ export default function PlayScreen({ userChoice, gameOverHandler }) {
 
     useEffect(() => {
         const subscription = Dimensions.addEventListener("change", () => {
-            setavailableDeviceWidth(Dimensions.get("window").width);
             setavailableDeviceHeight(Dimensions.get("window").height);
         });
     }, [Dimensions]);
