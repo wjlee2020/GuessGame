@@ -116,6 +116,7 @@ const style = StyleSheet.create({
     },
     inputContainer: {
         width: "80%",
+        maxWidth: "95%",
         minWidth: 300,
         alignItems: "center",
     },
@@ -138,7 +139,7 @@ const style = StyleSheet.create({
         textAlign: "center",
     },
     button: {
-        width: 110,
+        width: 100,
         marginRight: "auto",
         marginLeft: "auto",
     },
