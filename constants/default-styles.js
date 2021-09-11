@@ -1,10 +1,11 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import Colors from "../constants/colors";
 
 export default StyleSheet.create({
     basicContainer: {
         alignItems: "center",
         justifyContent: "center",
+        width: Dimensions.get("window").width * 0.7,
     },
     bodyText: {
         fontFamily: "open-sans",

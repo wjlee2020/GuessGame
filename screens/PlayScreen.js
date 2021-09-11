@@ -116,7 +116,7 @@ const style = StyleSheet.create({
     listContainer: {
         flex: 1,
         marginTop: 15,
-        width: "50%",
+        width: Dimensions.get("window").width > 350 ? "60%" : "80%",
     },
     list: {
         borderColor: "#ccc",

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
 import Colors from "../constants/colors";
 
@@ -25,6 +19,7 @@ const style = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 30,
         borderRadius: 15,
+        marginBottom: 10,
     },
     buttonText: {
         color: "white",
