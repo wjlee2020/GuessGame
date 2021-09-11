@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Alert,
+    ScrollView,
+    Dimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import DefaultStyles from "../constants/default-styles";
@@ -97,11 +104,12 @@ const style = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: "row",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         alignItems: "center",
-        marginTop: 20,
-        width: 300,
-        maxWidth: "80%",
+        marginTop: Dimensions.get("window").height > 600 ? 20 : 5,
+        width: "80%",
+        maxWidth: "90%",
+        minWidth: 300,
         marginRight: "auto",
         marginLeft: "auto",
     },
